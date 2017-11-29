@@ -1,0 +1,90 @@
+# NOTE: this file contains the application configuration as its basics. All
+#       customization you want to do for development purpose must be placed in
+#       docker-compose.override.yml.
+version: "2"
+services:
+
+  frontend:
+    restart: always
+    image: semtech/mu-nginx-spa-proxy
+    volumes:
+      - ./esco-visualization-frontend/dist:/app
+      - ./config/nginx:/etc/nginx/conf.d/
+    links:
+      - identifier:backend
+    ports:
+      - "4567:80"
+  identifier:
+    restart: always
+    image: semtech/mu-identifier
+    links:
+      - dispatcher:dispatcher
+
+  frontend-dist:
+    build: ./esco-visualization-frontend
+    volumes:
+      - ./esco-visualization-frontend:/app
+    command: sh -c "echo wooo && npm install -q && bower install --allow-root && ember build --dev"
+  dispatcher:
+    restart: always
+    image: semtech/mu-dispatcher:1.1.0
+    links:
+      - resource:resource
+      - hierarchyapi:hierarchyapi
+      - html2pdf:html2pdf
+      - indexer:indexer
+    volumes:
+      - ./config:/config
+
+  db:
+    restart: always
+    image: tenforce/virtuoso:1.3.1-virtuoso7.2.2
+    environment:
+      SPARQL_UPDATE: "true"
+      DEFAULT_GRAPH: "http://mu.semte.ch/application"
+    volumes:
+      - ./data/virtuoso:/var/lib/virtuoso/db
+
+  resourcebackend:
+    restart: always
+    image: semtech/mu-cl-resources:1.15.0    
+    links:
+      - db:database
+    volumes:
+      - ./config/resources:/config
+    environment:
+      BOOT: mu-cl-resources
+
+  resource:
+    restart: always
+    image: "semtech/mu-cache:0.4.0"
+    links:
+      - resourcebackend:backend
+    environment:
+      CACHE_BACKEND: "http://backend"
+
+  hierarchyapi:
+    restart: always
+    build: ./esco-core-hierarchy
+    links:
+      - db:database
+    environment:
+        HIER_CACHE_TIME: 365
+
+  solr:
+    restart: always
+    build: ./esco-core-solr
+    volumes:
+      - /data/solr_home
+    command: mvn jetty:run -Dsolr.port=8080
+
+  indexer:
+    build: ./esco-core-delta-based-indexer
+    links:
+      - solr:solr
+      - db:database
+    command: mvn spring-boot:run -Dsparql.namespace=http://mu.semte.ch/application -Dsparql.virtuoso.enabled=true -Dsparql.virtuoso.endpoint=http://database:8890/sparql/ -Dspring.data.solr.host=http://solr:8080/solr/collection1/ -Dserver.contextPath=/indexer
+
+  html2pdf:
+    restart: always
+    build: ./esco-core-html2pdf

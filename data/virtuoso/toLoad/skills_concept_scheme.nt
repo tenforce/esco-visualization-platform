@@ -1,0 +1,3 @@
+<http://data.europa.eu/esco/concept-scheme/skills> a <http://www.w3.org/2004/02/skos/core#ConceptScheme> .
+<http://data.europa.eu/esco/concept-scheme/skills> a <http://data.europa.eu/esco/model#ConceptScheme> .
+<http://data.europa.eu/esco/concept-scheme/skills> <http://mu.semte.ch/vocabularies/core/uuid> "c61aced6-0285-4da5-aa9e-ef09ba364f6e" .

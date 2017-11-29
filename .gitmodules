@@ -1,0 +1,15 @@
+[submodule "esco-core-hierarchy"]
+	path = esco-core-hierarchy
+	url = https://github.com/tenforce/esco-core-hierarchy
+[submodule "esco-core-solr"]
+	path = esco-core-solr
+	url = https://github.com/tenforce/esco-core-solr
+[submodule "esco-core-delta-based-indexer"]
+	path = esco-core-delta-based-indexer
+	url = https://github.com/tenforce/esco-core-delta-based-indexer
+[submodule "esco-visualization-frontend"]
+	path = esco-visualization-frontend
+	url = https://github.com/tenforce/esco-visualization-frontend
+[submodule "esco-core-html2pdf"]
+	path = esco-core-html2pdf
+	url = https://github.com/tenforce/esco-core-html2pdf
