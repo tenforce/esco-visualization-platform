@@ -47,6 +47,10 @@ defmodule Dispatcher do
     Proxy.forward conn, path, "http://hierarchyapi/hierarchies/"
   end
 
+  match "/structure/*path" do
+    Proxy.forward conn, path, "http://hierarchyapi/structures/"
+  end
+
   match "/concept-relations/*path" do
     Proxy.forward conn, path, "http://resource/concept-relations/"
   end
