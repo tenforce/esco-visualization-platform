@@ -8,7 +8,6 @@ services:
     restart: always
     build: ./esco-visualization-frontend
     volumes:
-      - ./esco-visualization-frontend/dist:/app
       - ./config/nginx:/etc/nginx/conf.d/
     links:
       - identifier:backend
