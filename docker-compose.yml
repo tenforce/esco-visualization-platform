@@ -6,7 +6,7 @@ services:
 
   frontend:
     restart: always
-    image: semtech/mu-nginx-spa-proxy
+    build: ./esco-visualization-frontend
     volumes:
       - ./esco-visualization-frontend/dist:/app
       - ./config/nginx:/etc/nginx/conf.d/
@@ -20,11 +20,6 @@ services:
     links:
       - dispatcher:dispatcher
 
-  frontend-dist:
-    build: ./esco-visualization-frontend
-    volumes:
-      - ./esco-visualization-frontend:/app
-    command: sh -c "echo wooo && npm install -q && bower install --allow-root && ember build --dev"
   dispatcher:
     restart: always
     image: semtech/mu-dispatcher:1.1.0
